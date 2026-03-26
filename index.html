@@ -14,6 +14,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
+  overflow:hidden;
 }
 
 .container{
@@ -39,42 +40,25 @@ body{
   justify-content:center;
   align-items:center;
 }
-
 @keyframes auraBreath{
   0%{box-shadow:0 0 18px rgba(255,150,170,.5);}
-  50%{box-shadow:0 0 44px rgba(255,120,150,.9);}
+  50%{box-shadow:0 0 45px rgba(255,120,150,.95);}
   100%{box-shadow:0 0 18px rgba(255,150,170,.5);}
 }
 
-/* ===== الأسماء الواضحة ===== */
+/* ===== الأسماء ===== */
 .name{
   font-size:2.2em;
   margin:4px 0;
-  font-weight:600;
+  font-weight:bold;
 }
-
-/* مجد */
 .name.majd{
   color:#c2255c;
-  animation:majdGlow 4s ease-in-out infinite;
+  text-shadow:0 0 6px rgba(194,37,92,.8);
 }
-
-/* محمد */
 .name.moh{
   color:#b08900;
-  animation:mohGlow 4s ease-in-out infinite;
-}
-
-@keyframes majdGlow{
-  0%{text-shadow:0 0 4px rgba(194,37,92,.6);}
-  50%{text-shadow:0 0 16px rgba(194,37,92,1);}
-  100%{text-shadow:0 0 4px rgba(194,37,92,.6);}
-}
-
-@keyframes mohGlow{
-  0%{text-shadow:0 0 4px rgba(176,137,0,.6);}
-  50%{text-shadow:0 0 16px rgba(176,137,0,1);}
-  100%{text-shadow:0 0 4px rgba(176,137,0,.6);}
+  text-shadow:0 0 6px rgba(176,137,0,.8);
 }
 
 /* ===== الرسالة ===== */
@@ -100,12 +84,20 @@ button{
   font-size:1em;
 }
 
-.counter{
-  font-size:.85em;
-  margin:6px 0;
+.counter{font-size:.85em;margin:6px 0;}
+
+/* ===== الإيموجيات ===== */
+.emoji{
+  position:fixed;
+  pointer-events:none;
+  animation:floatUp 4s ease-out forwards;
+}
+@keyframes floatUp{
+  from{opacity:1; transform:translateY(0) scale(1);}
+  to{opacity:0; transform:translateY(-250px) scale(2);}
 }
 
-/* ===== نافذة السر ===== */
+/* ===== السر ===== */
 .secret-overlay{
   position:fixed;
   inset:0;
@@ -149,7 +141,7 @@ button{
 
 <div id="secretOverlay" class="secret-overlay hidden">
   <div class="secret-box">
-    <h3>🤍 من زوجك</h3>
+    <h3>🤍 من محمد</h3>
     <button onclick="secret()">افتح الكلمة</button>
   </div>
 </div>
@@ -158,25 +150,46 @@ button{
 const message=document.getElementById("message");
 const overlay=document.getElementById("secretOverlay");
 
+/* ===== انفجار الإيموجيات ===== */
+const emojis=["❤️","💖","💕","💞","💗","💓","💘","😍","🥰","🌹","🌸","✨","💐","🫶"];
+
+function emojiBurst(count){
+  for(let i=0;i<count;i++){
+    const e=document.createElement("div");
+    e.className="emoji";
+    e.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    e.style.left=Math.random()*window.innerWidth+"px";
+    e.style.top=(window.innerHeight-10)+"px";
+    e.style.fontSize=(Math.random()*2+1.2)+"em";
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),4000);
+  }
+}
+
+/* ===== الوقت ===== */
 function afterMaghrib(){
   const h=new Date().getHours();
   return (h>=18 || h<5);
 }
-
 if(new Date().getHours()>=5){
   localStorage.removeItem("secretCount");
 }
 
+/* ===== لمسة الحب ===== */
 let touches=0;
 function love(){
   if(!afterMaghrib()){
     message.textContent="الكلمات الخاصة تُفتح بعد المغرب 🌙";
+    emojiBurst(30);
     return;
   }
   touches++;
   counter.textContent=`${touches} / 7`;
+  emojiBurst(100);
+
   if(touches===7){
     overlay.classList.remove("hidden");
+    emojiBurst(200);
   }
 }
 
@@ -317,9 +330,10 @@ const secretWords=[
 ];
 
 let mi=0,ei=0,di=0,si=0;
-function morning(){message.textContent=morningAzkar[mi++%30];}
-function evening(){message.textContent=eveningAzkar[ei++%30];}
-function duaa(){message.textContent=duaas[di++%30];}
+function morning(){message.textContent=morningAzkar[mi++%30]; emojiBurst(40);}
+function evening(){message.textContent=eveningAzkar[ei++%30]; emojiBurst(40);}
+function duaa(){message.textContent=duaas[di++%30]; emojiBurst(40);}
+
 function secret(){
   let c=Number(localStorage.getItem("secretCount")||0);
   if(c>=5){
@@ -330,6 +344,7 @@ function secret(){
   message.textContent=secretWords[si++%30];
   localStorage.setItem("secretCount",c+1);
   overlay.classList.add("hidden");
+  emojiBurst(400);  // 💥 انفجار حب هائل
 }
 </script>
 
