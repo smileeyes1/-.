@@ -24,22 +24,65 @@ body{
   text-align:center;
 }
 
-/* ===== الأسماء ===== */
-.name{
-  font-size:2.6em;
-  margin:6px 0;
+/* ===== قلب ينبض ===== */
+.heart{
+  width:220px;
+  height:200px;
+  margin:0 auto 10px;
+  position:relative;
+  transform:rotate(-45deg);
+  background:#ff4d6d;
+  animation:heartBeat 1.4s infinite;
 }
-.name span{color:#ff4d6d;}
-.name.glow span{animation:sparkle 1.4s infinite alternate;}
+.heart::before,
+.heart::after{
+  content:"";
+  width:220px;
+  height:200px;
+  background:#ff4d6d;
+  border-radius:50%;
+  position:absolute;
+}
+.heart::before{top:-110px; left:0;}
+.heart::after{left:110px; top:0;}
 
-@keyframes sparkle{
-  from{ text-shadow:0 0 6px currentColor; }
-  to{ text-shadow:0 0 22px currentColor; }
+@keyframes heartBeat{
+  0%{transform:scale(1) rotate(-45deg);}
+  50%{transform:scale(1.08) rotate(-45deg);}
+  100%{transform:scale(1) rotate(-45deg);}
+}
+
+/* ===== أسماء داخل القلب ===== */
+.names{
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  transform:rotate(45deg);
+}
+
+.name{
+  font-size:2.4em;
+  margin:4px 0;
+}
+.name span{
+  animation:colorGlow 2s infinite alternate;
+}
+
+@keyframes colorGlow{
+  0%{color:#fff; text-shadow:0 0 6px #fff;}
+  50%{color:#ffe066; text-shadow:0 0 14px #ffec99;}
+  100%{color:#ffffff; text-shadow:0 0 20px #ffffff;}
 }
 
 /* ===== الرسالة ===== */
 .message{
-  background:#fff;
+  background:white;
   border-radius:16px;
   padding:16px;
   font-size:1.15em;
@@ -56,23 +99,8 @@ button{
   border:none;
   border-radius:12px;
   background:#ff4d6d;
-  color:#fff;
+  color:white;
   font-size:1em;
-}
-
-.counter{
-  font-size:.85em;
-  margin:6px 0;
-}
-
-/* ===== القلوب ===== */
-.particle{
-  position:fixed;
-  pointer-events:none;
-  animation:floatUp 3s ease-out forwards;
-}
-@keyframes floatUp{
-  to{opacity:0;transform:translateY(-140px) scale(1.6)}
 }
 
 /* ===== نافذة السر ===== */
@@ -89,29 +117,8 @@ button{
   background:#fff0f5;
   padding:24px;
   border-radius:22px;
-  text-align:center;
-  width:80%;
-  max-width:300px;
-  animation:pop .6s ease;
 }
-.secret-box h3{
-  margin-bottom:12px;
-  color:#ff4d6d;
-}
-.secret-box button{
-  background:linear-gradient(135deg,#ff0844,#ffb199);
-  animation:pulse 1.4s infinite;
-}
-
 .hidden{display:none;}
-
-@keyframes pop{
-  from{transform:scale(.6);opacity:0}
-  to{transform:scale(1);opacity:1}
-}
-@keyframes pulse{
-  50%{box-shadow:0 0 25px #ff4d6d}
-}
 </style>
 </head>
 
@@ -119,17 +126,18 @@ button{
 
 <div class="container">
 
-  <div class="name glow" id="majd"></div>
-  <div class="name" id="moh"></div>
+  <!-- القلب -->
+  <div class="heart">
+    <div class="names">
+      <div class="name" id="majd"></div>
+      <div class="name" id="moh"></div>
+    </div>
+  </div>
 
   <div class="message" id="message">أنتِ نعمة من الله 🌹</div>
 
-  <button id="loveBtn" onclick="love()">لمسة حب ❤️</button>
-  <div class="counter" id="count">0 / 7</div>
-
-  <button onclick="morning()">أذكار الصباح 🌅</button>
-  <button onclick="evening()">أذكار المساء 🌙</button>
-  <button onclick="duaa()">أدعية 💫</button>
+  <button onclick="love()">لمسة حب ❤️</button>
+  <div id="counter">0 / 7</div>
 
 </div>
 
@@ -141,210 +149,81 @@ button{
 </div>
 
 <script>
-/* ===== بناء الأسماء ===== */
-function buildName(id,text){
+/* ===== بناء نص متلألئ ===== */
+function buildText(id,text){
   const el=document.getElementById(id);
-  el.innerHTML="";
   [...text].forEach(l=>{
     const s=document.createElement("span");
     s.textContent=l;
     el.appendChild(s);
   });
 }
-buildName("majd","مجد");
-buildName("moh","محمد");
+buildText("majd","مجد");
+buildText("moh","محمد");
 
-/* ===== القلوب ===== */
-const shapes=["❤️","💖","💕","✨","🌸"];
-function burst(n){
-  for(let i=0;i<n;i++){
-    const p=document.createElement("div");
-    p.className="particle";
-    p.textContent=shapes[Math.floor(Math.random()*shapes.length)];
-    p.style.left=Math.random()*innerWidth+"px";
-    p.style.top=Math.random()*innerHeight+"px";
-    p.style.fontSize=(Math.random()*1.5+1)+"em";
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),3000);
+const message=document.getElementById("message");
+const overlay=document.getElementById("secretOverlay");
+
+/* ===== وقت المغرب ===== */
+function isAfterMaghrib(){
+  const h=new Date().getHours();
+  return (h>=18 || h<5);
+}
+
+/* ===== إعادة تعيين يومي بعد الفجر ===== */
+function resetIfFajr(){
+  const h=new Date().getHours();
+  if(h>=5){
+    localStorage.removeItem("secretCount");
   }
 }
+resetIfFajr();
 
-/* ===== التحقق من وقت المغرب ===== */
-function isMaghribTime(){
-  const hour=new Date().getHours();
-  return hour >= 18;
-}
-
-/* ===== العدّاد ===== */
+/* ===== العدادات ===== */
 let touches=0;
 
 function love(){
-  if(!isMaghribTime()){
-    message.textContent="النافذة السرية تُفتح عند المغرب 🌙";
-    burst(10);
+  if(!isAfterMaghrib()){
+    message.textContent="الكلمات السرية تظهر بعد المغرب 🌙";
     return;
   }
 
-  if(localStorage.getItem("secretOpened")) return;
-
   touches++;
-  count.textContent=`${touches} / 7`;
-  burst(25);
+  counter.textContent=`${touches} / 7`;
 
   if(touches===7){
-    secretOverlay.classList.remove("hidden");
-    burst(120);
+    overlay.classList.remove("hidden");
   }
 }
 
-/* ===== 30 أذكار الصباح ===== */
-const morningAzkar=[
-"أصبحنا وأصبح الملك لله",
-"اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت",
-"الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور",
-"رضيت بالله ربًا وبالإسلام دينًا وبمحمد ﷺ نبيًا",
-"اللهم ما أصبح بي من نعمة فمنك وحدك لا شريك لك",
-"حسبي الله لا إله إلا هو عليه توكلت",
-"سبحان الله وبحمده",
-"سبحان الله العظيم",
-"لا إله إلا الله وحده لا شريك له",
-"اللهم إني أسألك خير هذا اليوم",
-"يا حي يا قيوم برحمتك أستغيث",
-"اللهم عافني في بدني",
-"اللهم عافني في سمعي",
-"اللهم عافني في بصري",
-"اللهم إني أعوذ بك من الكفر والفقر",
-"اللهم احفظني من بين يديّ ومن خلفي",
-"اللهم استرني فوق الأرض وتحت الأرض",
-"اللهم طمئن قلبي",
-"اللهم نوّر يومي",
-"اللهم اجعل يومي خيرًا",
-"اللهم ارزقني رزقًا حلالًا طيبًا",
-"اللهم يسّر أمري",
-"اللهم وفقني لما تحب وترضى",
-"اللهم اغفر لي",
-"اللهم اهدني",
-"اللهم قرّبني إليك",
-"اللهم اجعل عملي صالحًا",
-"اللهم لا تكلني لنفسي",
-"اللهم بارك لي في وقتي",
-"والحمد لله رب العالمين"
-];
-
-/* ===== 30 أذكار المساء ===== */
-const eveningAzkar=[
-"أمسينا وأمسى الملك لله",
-"اللهم بك أمسينا وبك أصبحنا",
-"أعوذ بكلمات الله التامات من شر ما خلق",
-"حسبي الله لا إله إلا هو عليه توكلت",
-"سبحان الله وبحمده",
-"سبحان الله العظيم",
-"اللهم اغفر لي ذنوبي",
-"اللهم ارح قلبي",
-"اللهم اجعل لي سكينة",
-"اللهم طمئن نفسي",
-"اللهم استرني",
-"اللهم اجبر خاطري",
-"اللهم احفظني من كل سوء",
-"اللهم احفظ أهلي",
-"اللهم ارزقني الرضا",
-"اللهم نوّر قلبي",
-"اللهم أعذني من الهم والحزن",
-"اللهم قربني إليك",
-"اللهم تقبل مني",
-"اللهم ارح ضعفي",
-"اللهم اجعل نومي راحة",
-"اللهم احفظ أحبتي",
-"اللهم لا تحرمني الأمل",
-"اللهم ارزقني سلامًا داخليًا",
-"اللهم ثبت قلبي",
-"اللهم أنس وحشتي",
-"اللهم اجعل غدي أجمل",
-"اللهم اختم يومي بخير",
-"اللهم اغفر لي ولوالدي",
-"والحمد لله"
-];
-
-/* ===== 30 دعاء ===== */
-const duaas=[
-"اللهم اجبر قلبي جبرًا يليق بعظمتك",
-"اللهم ارزقني طمأنينة لا تزول",
-"اللهم اشفِ صدري",
-"اللهم اكفني ما أهمني",
-"اللهم لا تتركني لنفسي طرفة عين",
-"اللهم افتح لي أبواب الخير",
-"اللهم ارزقني سلامًا داخليًا",
-"اللهم ارح قلبي من التعب",
-"اللهم دلني على الصواب",
-"اللهم يسر أمري",
-"اللهم قرّب لي الخير",
-"اللهم أبعد عني الشر",
-"اللهم لا تخيب رجائي",
-"اللهم زدني قربًا منك",
-"اللهم ارزقني الرضا",
-"اللهم اجعلني من السعداء",
-"اللهم ثبت قلبي على طاعتك",
-"اللهم أعني على ذكرك وشكرك",
-"اللهم احفظ قلبي من القسوة",
-"اللهم بارك لي في حياتي",
-"اللهم ارزقني صبرًا جميلًا",
-"اللهم ارزقني فرحًا دائمًا",
-"اللهم لا تكسر لي خاطرًا",
-"اللهم اجعلني مطمئنًا",
-"اللهم اكتب لي الخير حيث كان",
-"اللهم طهّر قلبي",
-"اللهم تقبل دعائي",
-"اللهم اشرح صدري",
-"اللهم نوّر طريقي",
-"اللهم أحسن خاتمتي"
-];
-
-/* ===== 30 كلمة سرية ===== */
+/* ===== كلمات سرية: 5 مرات فقط ===== */
 const secretWords=[
-"مجد… وجودك في حياتي نعمة من الله 💖",
+"مجد… وجودك في حياتي نعمة من الله",
 "أحبك بهدوء يشبه الطمأنينة",
 "قربك أمان حقيقي",
-"اسمك وحده راحة",
-"أبتسم كلما خطرتِ في بالي",
-"وجودك فرّق كثيرًا في حياتي",
+"اسمك في قلبي قبل لساني",
+"أدعُ لك كل ليلة",
+"وجودك فرق في حياتي",
 "قلبك جميل ونقي",
-"ضحكتك حياة",
-"حديثك يهدئني",
-"أختارك كل مرة",
-"أحبك بلا شروط",
-"معك أشعر بالأمان",
-"أدعُ لك في صلاتي دائمًا",
-"أحب حضورك الهادئ",
+"حديثك راحة",
 "قربك سلام",
-"أنتِ نور بسيط لكن عميق",
-"أحبك دون ضجيج",
-"مكانك في قلبي ثابت",
-"أنتِ معنى السعادة",
-"قربك يكفيني",
-"أحب اسمك",
-"أثق بك",
-"وجودك يطمئن قلبي",
-"أحب تفاصيلك الصغيرة",
-"أفضّلك دائمًا",
-"أنتِ مختلفة حقًا",
-"قلبك أبيض",
-"أحبك باحترام وصدق",
-"أنتِ اختياري",
-"محمد 💌"
+"أنتِ اختياري"
 ];
 
-/* ===== التتابع ===== */
-const message=document.getElementById("message");
-let mi=0,ei=0,di=0,si=0;
+let si=0;
 
-function morning(){message.textContent=morningAzkar[mi++%30];burst(20);}
-function evening(){message.textContent=eveningAzkar[ei++%30];burst(20);}
-function duaa(){message.textContent=duaas[di++%30];burst(20);}
 function secret(){
-  message.textContent=secretWords[si++%30];
-  burst(120);
-  secretOverlay.classList.add("hidden");
-  localStorage.setItem("secretOpened","true");
+  let count=Number(localStorage.getItem("secretCount")||0);
+
+  if(count>=5){
+    message.textContent="اكتملت كلمات اليوم 💖، تعود بعد المغرب القادم";
+    overlay.classList.add("hidden");
+    return;
+  }
+
+  message.textContent=secretWords[si++%secretWords.length];
+  localStorage.setItem("secretCount",count+1);
+  overlay.classList.add("hidden");
 }
 </script>
 
