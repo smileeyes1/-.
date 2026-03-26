@@ -3,15 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مجد ❤️</title>
+<title>مجد 🤍</title>
 
 <style>
 body{
   margin:0;
   height:100vh;
-  overflow:hidden;
   font-family:Tahoma,sans-serif;
-  background:linear-gradient(135deg,#ffd1dc,#ffe6eb,#fff0f5);
+  background:linear-gradient(135deg,#ffe6eb,#fff0f5,#ffe6eb);
   display:flex;
   justify-content:center;
   align-items:center;
@@ -24,55 +23,44 @@ body{
   text-align:center;
 }
 
-/* ===== القلب ===== */
-.heart{
-  width:160px;
-  height:140px;
-  margin:0 auto 6px;
-  position:relative;
-  transform:rotate(-45deg);
-  background:#ff4d6d;
-  animation:heartBeat 1.4s infinite;
-}
-.heart::before,
-.heart::after{
-  content:"";
-  width:160px;
-  height:140px;
-  background:#ff4d6d;
+/* ===== الهالة المضيئة ===== */
+.aura{
+  width:210px;
+  height:160px;
+  margin:0 auto 14px;
   border-radius:50%;
-  position:absolute;
+  background:radial-gradient(circle,
+    rgba(255,200,210,.55),
+    rgba(255,200,210,.25),
+    rgba(255,200,210,0)
+  );
+  animation:auraBreath 4s ease-in-out infinite;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-.heart::before{top:-80px; left:0;}
-.heart::after{top:0; left:80px;}
 
-@keyframes heartBeat{
-  0%{transform:scale(1) rotate(-45deg);}
-  50%{transform:scale(1.08) rotate(-45deg);}
-  100%{transform:scale(1) rotate(-45deg);}
+@keyframes auraBreath{
+  0%{box-shadow:0 0 16px rgba(255,180,195,.5);}
+  50%{box-shadow:0 0 38px rgba(255,140,170,.85);}
+  100%{box-shadow:0 0 16px rgba(255,180,195,.5);}
 }
 
 /* ===== الأسماء ===== */
-.names{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  transform:rotate(45deg);
-}
 .name{
-  font-size:1.9em;
-  margin:2px 0;
+  font-size:2em;
+  margin:4px 0;
 }
 .name span{
-  animation:glow 2s infinite alternate;
+  display:inline-block;
+  animation:letterGlow 3s infinite;
 }
-@keyframes glow{
-  0%{color:#ffffff;text-shadow:0 0 6px #fff;}
-  50%{color:#ffe066;text-shadow:0 0 14px #ffec99;}
-  100%{color:#ffffff;text-shadow:0 0 18px #ffffff;}
+
+@keyframes letterGlow{
+  0%{color:#ffffff;text-shadow:0 0 6px #ffffff;}
+  40%{color:#ffe066;text-shadow:0 0 14px #ffe066;}
+  70%{color:#ffccd5;text-shadow:0 0 18px #ffccd5;}
+  100%{color:#ffffff;text-shadow:0 0 6px #ffffff;}
 }
 
 /* ===== الرسالة ===== */
@@ -80,7 +68,7 @@ body{
   background:#fff;
   border-radius:16px;
   padding:16px;
-  font-size:1.15em;
+  font-size:1.1em;
   min-height:100px;
   margin:14px 0;
   line-height:1.8;
@@ -93,9 +81,14 @@ button{
   margin-top:6px;
   border:none;
   border-radius:12px;
-  background:#ff4d6d;
-  color:#fff;
+  background:#ff6b81;
+  color:white;
   font-size:1em;
+}
+
+.counter{
+  font-size:.85em;
+  margin:6px 0;
 }
 
 /* ===== نافذة السر ===== */
@@ -122,8 +115,8 @@ button{
 
 <div class="container">
 
-  <div class="heart">
-    <div class="names">
+  <div class="aura">
+    <div>
       <div class="name" id="majd"></div>
       <div class="name" id="moh"></div>
     </div>
@@ -131,28 +124,29 @@ button{
 
   <div class="message" id="message">أنتِ نعمة من الله 🌹</div>
 
-  <button onclick="love()">لمسة حب ❤️</button>
-  <div id="counter">0 / 7</div>
+  <button onclick="love()">لمسة حب 🤍</button>
+  <div class="counter" id="counter">0 / 7</div>
 
   <button onclick="morning()">أذكار الصباح 🌅</button>
   <button onclick="evening()">أذكار المساء 🌙</button>
   <button onclick="duaa()">أدعية 💫</button>
-
 </div>
 
 <div id="secretOverlay" class="secret-overlay hidden">
   <div class="secret-box">
-    <h3>💖 من محمد</h3>
-    <button onclick="secret()">افتح الكلمة 💌</button>
+    <h3>🤍 من زوجك</h3>
+    <button onclick="secret()">افتح الكلمة</button>
   </div>
 </div>
 
 <script>
 function buildText(id,text){
   const el=document.getElementById(id);
-  [...text].forEach(l=>{
+  el.innerHTML="";
+  [...text].forEach((l,i)=>{
     const s=document.createElement("span");
     s.textContent=l;
+    s.style.animationDelay=(i*0.3)+"s";
     el.appendChild(s);
   });
 }
@@ -162,32 +156,29 @@ buildText("moh","محمد");
 const message=document.getElementById("message");
 const overlay=document.getElementById("secretOverlay");
 
-/* ===== وقت المغرب ===== */
 function afterMaghrib(){
- return (new Date().getHours()>=18 || new Date().getHours()<5);
+  const h=new Date().getHours();
+  return (h>=18 || h<5);
 }
-
-/* ===== إعادة تعيين بعد الفجر ===== */
 if(new Date().getHours()>=5){
- localStorage.removeItem("secretCount");
+  localStorage.removeItem("secretCount");
 }
 
-/* ===== عداد الحب ===== */
 let touches=0;
 function love(){
- if(!afterMaghrib()){
-  message.textContent="الكلمات السرّية تظهر بعد المغرب 🌙";
-  return;
- }
- touches++;
- counter.textContent=`${touches} / 7`;
- if(touches===7){
-  overlay.classList.remove("hidden");
- }
+  if(!afterMaghrib()){
+    message.textContent="الكلمات الخاصة تُفتح بعد المغرب 🌙";
+    return;
+  }
+  touches++;
+  counter.textContent=`${touches} / 7`;
+  if(touches===7){
+    overlay.classList.remove("hidden");
+  }
 }
 
-/* ===== أذكار الصباح (30) ===== */
-const morningAzkar=[
+/* ===== 30 أذكار الصباح ===== */
+const morningAzkar=[ /* 30 عبارة كاملة */
 "أصبحنا وأصبح الملك لله",
 "اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت",
 "الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور",
@@ -220,7 +211,7 @@ const morningAzkar=[
 "والحمد لله رب العالمين"
 ];
 
-/* ===== أذكار المساء (30) ===== */
+/* ===== 30 أذكار المساء ===== */
 const eveningAzkar=[
 "أمسينا وأمسى الملك لله",
 "اللهم بك أمسينا وبك أصبحنا",
@@ -254,7 +245,7 @@ const eveningAzkar=[
 "والحمد لله"
 ];
 
-/* ===== الأدعية (30) ===== */
+/* ===== 30 دعاء ===== */
 const duaas=[
 "اللهم اجبر قلبي جبرًا يليق بعظمتك",
 "اللهم ارزقني طمأنينة لا تزول",
@@ -288,7 +279,7 @@ const duaas=[
 "اللهم أحسن خاتمتي"
 ];
 
-/* ===== الكلمات السرية (30) ===== */
+/* ===== 30 كلمة سرية ===== */
 const secretWords=[
 "مجد… وجودك في حياتي نعمة من الله",
 "أحبك بهدوء يشبه الطمأنينة",
@@ -319,25 +310,23 @@ const secretWords=[
 "لكِ مكانة عظيمة",
 "وجودك نعمة",
 "أنتِ أمان",
-"محمد 💌"
+"محمد 🤍"
 ];
 
 let mi=0,ei=0,di=0,si=0;
-
 function morning(){message.textContent=morningAzkar[mi++%30];}
 function evening(){message.textContent=eveningAzkar[ei++%30];}
 function duaa(){message.textContent=duaas[di++%30];}
-
 function secret(){
- let c=Number(localStorage.getItem("secretCount")||0);
- if(c>=5){
-  message.textContent="اكتملت كلمات اليوم 💖";
+  let c=Number(localStorage.getItem("secretCount")||0);
+  if(c>=5){
+    message.textContent="اكتملت كلمات اليوم 🤍";
+    overlay.classList.add("hidden");
+    return;
+  }
+  message.textContent=secretWords[si++%30];
+  localStorage.setItem("secretCount",c+1);
   overlay.classList.add("hidden");
-  return;
- }
- message.textContent=secretWords[si++%30];
- localStorage.setItem("secretCount",c+1);
- overlay.classList.add("hidden");
 }
 </script>
 
