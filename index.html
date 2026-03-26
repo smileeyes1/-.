@@ -16,7 +16,6 @@ body{
   justify-content:center;
   align-items:center;
 }
-
 .container{
   width:100%;
   max-width:390px;
@@ -24,15 +23,16 @@ body{
   text-align:center;
 }
 
-/* ===== الأسماء ===== */
+/* ===== الأسماء (حروف متصلة) ===== */
 .name{
   font-size:3em;
   cursor:pointer;
   user-select:none;
   margin:6px 0;
+  direction:rtl;
+  unicode-bidi:isolate;
 }
 .name span{
-  display:inline-block;
   color:#ff4d6d;
   transition:.3s;
 }
@@ -40,8 +40,8 @@ body{
   animation:sparkle 1.4s infinite alternate;
 }
 @keyframes sparkle{
-  from{ text-shadow:0 0 6px currentColor; transform:translateY(0); }
-  to{ text-shadow:0 0 20px currentColor,0 0 30px currentColor; transform:translateY(-2px); }
+  from{ text-shadow:0 0 6px currentColor; }
+  to{ text-shadow:0 0 22px currentColor,0 0 32px currentColor; }
 }
 
 /* ===== الرسالة ===== */
@@ -65,8 +65,38 @@ button{
   color:#fff;
   font-size:1.1em;
 }
-button:disabled{background:#bbb;}
 .counter{font-size:.9em;margin:6px 0}
+
+/* ===== منطقة الزر السرّي ===== */
+.secret-area{
+  margin-top:20px;
+  padding:18px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#fff0f5,#ffe6eb);
+  box-shadow:0 0 25px rgba(255,77,109,.35);
+  animation:fadeIn 1s ease;
+}
+.secret-title{
+  font-size:1.2em;
+  margin-bottom:10px;
+  color:#ff4d6d;
+  font-weight:bold;
+}
+.secret-area button{
+  background:linear-gradient(135deg,#ff0844,#ffb199);
+  animation:secretPulse 1.5s infinite;
+}
+.hidden{display:none;}
+
+@keyframes secretPulse{
+  0%{box-shadow:0 0 8px #ff4d6d;}
+  50%{box-shadow:0 0 30px #ff4d6d;}
+  100%{box-shadow:0 0 8px #ff4d6d;}
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
 
 /* ===== القلوب والأشكال ===== */
 .particle{
@@ -75,8 +105,8 @@ button:disabled{background:#bbb;}
   animation:floatUp 3.5s ease-out forwards;
 }
 @keyframes floatUp{
-  from{opacity:1;transform:translateY(0) scale(1);}
-  to{opacity:0;transform:translateY(-160px) scale(1.8);}
+  from{opacity:1;transform:translateY(0) scale(1)}
+  to{opacity:0;transform:translateY(-160px) scale(1.8)}
 }
 </style>
 </head>
@@ -97,17 +127,22 @@ button:disabled{background:#bbb;}
   <button onclick="evening()">أذكار المساء 🌙</button>
   <button onclick="duaa()">أدعية 🙏</button>
 
-  <button id="secretBtn" onclick="secret()" disabled>🔒 رسالة سرّية</button>
+  <!-- مكان خاص للزر السرّي -->
+  <div id="secretArea" class="secret-area hidden">
+    <div class="secret-title">✨ رسالة خاصة ✨</div>
+    <button onclick="secret()">🔒 افتح الرسالة السرّية</button>
+  </div>
 
 </div>
 
 <script>
-/* ===== أسماء ===== */
+/* ===== بيانات ===== */
 const NAME_MAJD="مجد";
-const NAME_MOH ="محمد";
+const NAME_MOH="محمد";
 const yourName="محمد";
+const msg=document.getElementById("message");
 
-/* ===== بناء الحروف ===== */
+/* ===== بناء الحروف (تبقى متصلة) ===== */
 function buildName(id,text){
   const el=document.getElementById(id);
   el.innerHTML="";
@@ -133,7 +168,7 @@ function sparkle(id){
   burst(30,lastX,lastY);
 }
 
-/* ===== قلوب وأشكال ===== */
+/* ===== القلوب ===== */
 const shapes=["❤️","💖","💕","💘","✨","🌸","🌹","⭐"];
 function burst(n,x,y){
   for(let i=0;i<n;i++){
@@ -163,7 +198,10 @@ function love(){
   touches++;
   document.getElementById("count").textContent=`${touches} / 7`;
   burst(40,lastX,lastY);
-  if(touches>=7) document.getElementById("secretBtn").disabled=false;
+  if(touches===7){
+    document.getElementById("secretArea").classList.remove("hidden");
+    burst(120,lastX,lastY);
+  }
 }
 
 /* ===== أذكار الصباح (30) ===== */
@@ -216,7 +254,6 @@ const duaas=[
 "اللهم اجعلني قريبًا منك"
 ];
 
-const msg=document.getElementById("message");
 let mi=0,ei=0,di=0;
 function morning(){ msg.textContent=morningAzkar[mi]; mi=(mi+1)%30; burst(40,lastX,lastY); }
 function evening(){ msg.textContent=eveningAzkar[ei]; ei=(ei+1)%30; burst(40,lastX,lastY); }
@@ -236,7 +273,7 @@ let si=0;
 function secret(){
   msg.textContent=secrets[si];
   si=(si+1)%secrets.length;
-  burst(150,lastX,lastY); // انفجار مضاعف
+  burst(150,lastX,lastY);
 }
 </script>
 
