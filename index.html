@@ -46,6 +46,34 @@
       text-shadow: 0 0 10px #ff99cc;
     }
 
+    .buttons {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+    }
+
+    button {
+      background-color: #ff3366;
+      border: none;
+      color: white;
+      padding: 15px 25px;
+      font-size: 1.2em;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #ff99cc;
+    }
+
+    button:hover {
+      background-color: #cc0052;
+    }
+
+    .counter {
+      margin-top: 5px;
+      font-size: 1em;
+      color: #333;
+      text-align: center;
+    }
+
     .heart {
       position: absolute;
       color: red;
@@ -62,6 +90,21 @@
 <body>
   <h1 id="majid">مجد</h1>
   <div class="message" id="message">أنتِ نعمة من الله 🌹</div>
+
+  <div class="buttons">
+    <div>
+      <button onclick="showText('morning')">أذكار الصباح</button>
+      <div class="counter" id="morningCounter">0</div>
+    </div>
+    <div>
+      <button onclick="showText('evening')">أذكار المساء</button>
+      <div class="counter" id="eveningCounter">0</div>
+    </div>
+    <div>
+      <button onclick="showText('duaa')">أدعية</button>
+      <div class="counter" id="duaaCounter">0</div>
+    </div>
+  </div>
 
   <script>
     const messages = [
@@ -83,6 +126,41 @@
         msgElement.style.opacity = 1;
       }, 500);
     }, 2500);
+
+    // نصوص الأذكار والأدعية
+    const morningAzkar = [
+      "أصبحنا وأصبح الملك لله 🌅",
+      "اللهم بك أصبحنا وبك نحيا ✨",
+      "اللهم اجعل هذا اليوم خيرًا وبركة 🌸"
+    ];
+    const eveningAzkar = [
+      "أمسينا وأمسى الملك لله 🌙",
+      "اللهم بك أمسينا وبك نحيا 💫",
+      "اللهم اجعل ليلنا سكينة ورحمة 🌹"
+    ];
+    const duaas = [
+      "اللهم ارزقنا حبك وحب من يحبك 💖",
+      "اللهم اجعلنا من الذاكرين الشاكرين 🌸",
+      "اللهم اجعل بيننا مودة ورحمة ✨",
+      "اللهم احفظها بحفظك وارزقها السعادة 🌺",
+      "اللهم اجعل بيتنا بيتًا عامرًا بذكرك 💕"
+    ];
+
+    let counters = { morning: 0, evening: 0, duaa: 0 };
+
+    function showText(type) {
+      counters[type]++;
+      document.getElementById(type + "Counter").textContent = counters[type];
+      let text = "";
+      if (type === "morning") {
+        text = morningAzkar[counters[type] % morningAzkar.length];
+      } else if (type === "evening") {
+        text = eveningAzkar[counters[type] % eveningAzkar.length];
+      } else {
+        text = duaas[counters[type] % duaas.length];
+      }
+      msgElement.textContent = text;
+    }
 
     // قلوب تتساقط
     function createHeart() {
