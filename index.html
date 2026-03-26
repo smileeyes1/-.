@@ -16,97 +16,103 @@ body{
   justify-content:center;
   align-items:center;
 }
+
 .container{
   width:100%;
-  max-width:390px;
-  padding:18px;
+  max-width:360px;
+  padding:14px;
   text-align:center;
 }
 
-/* ===== الأسماء (حروف متصلة) ===== */
+/* ===== الأسماء ===== */
 .name{
-  font-size:3em;
+  font-size:2.6em;
   cursor:pointer;
-  user-select:none;
   margin:6px 0;
   direction:rtl;
-  unicode-bidi:isolate;
 }
 .name span{
   color:#ff4d6d;
-  transition:.3s;
 }
 .name.glow span{
   animation:sparkle 1.4s infinite alternate;
 }
 @keyframes sparkle{
   from{ text-shadow:0 0 6px currentColor; }
-  to{ text-shadow:0 0 22px currentColor,0 0 32px currentColor; }
+  to{ text-shadow:0 0 22px currentColor; }
 }
 
 /* ===== الرسالة ===== */
 .message{
   background:#fff;
   border-radius:16px;
-  padding:18px;
-  font-size:1.2em;
-  min-height:90px;
-  margin:18px 0;
+  padding:16px;
+  font-size:1.15em;
+  min-height:80px;
+  margin:14px 0;
 }
 
-/* ===== الأزرار ===== */
+/* ===== الأزرار (أصغر) ===== */
 button{
   width:100%;
-  padding:14px;
-  margin-top:8px;
+  padding:12px;
+  margin-top:6px;
   border:none;
-  border-radius:14px;
+  border-radius:12px;
   background:#ff4d6d;
   color:#fff;
-  font-size:1.1em;
-}
-.counter{font-size:.9em;margin:6px 0}
-
-/* ===== منطقة الزر السرّي ===== */
-.secret-area{
-  margin-top:20px;
-  padding:18px;
-  border-radius:20px;
-  background:linear-gradient(135deg,#fff0f5,#ffe6eb);
-  box-shadow:0 0 25px rgba(255,77,109,.35);
-  animation:fadeIn 1s ease;
-}
-.secret-title{
-  font-size:1.2em;
-  margin-bottom:10px;
-  color:#ff4d6d;
-  font-weight:bold;
-}
-.secret-area button{
-  background:linear-gradient(135deg,#ff0844,#ffb199);
-  animation:secretPulse 1.5s infinite;
-}
-.hidden{display:none;}
-
-@keyframes secretPulse{
-  0%{box-shadow:0 0 8px #ff4d6d;}
-  50%{box-shadow:0 0 30px #ff4d6d;}
-  100%{box-shadow:0 0 8px #ff4d6d;}
-}
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
+  font-size:1em;
 }
 
-/* ===== القلوب والأشكال ===== */
+.counter{font-size:.85em;margin:6px 0}
+
+/* ===== القلوب ===== */
 .particle{
   position:fixed;
   pointer-events:none;
-  animation:floatUp 3.5s ease-out forwards;
+  animation:floatUp 3s ease-out forwards;
 }
 @keyframes floatUp{
-  from{opacity:1;transform:translateY(0) scale(1)}
-  to{opacity:0;transform:translateY(-160px) scale(1.8)}
+  to{opacity:0;transform:translateY(-140px) scale(1.6)}
+}
+
+/* ===== نافذة الزر السرّي (وسط الشاشة) ===== */
+.secret-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+.secret-box{
+  background:#fff0f5;
+  padding:24px;
+  border-radius:22px;
+  text-align:center;
+  width:80%;
+  max-width:300px;
+  animation:pop 0.6s ease;
+}
+.secret-box h3{
+  margin:0 0 12px;
+  color:#ff4d6d;
+}
+.secret-box button{
+  background:linear-gradient(135deg,#ff0844,#ffb199);
+  font-size:1.1em;
+  animation:pulse 1.4s infinite;
+}
+
+.hidden{display:none;}
+
+@keyframes pop{
+  from{transform:scale(.6);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+@keyframes pulse{
+  50%{box-shadow:0 0 25px #ff4d6d}
 }
 </style>
 </head>
@@ -115,8 +121,8 @@ button{
 
 <div class="container">
 
-  <div class="name" id="majd" onclick="sparkle('majd')"></div>
-  <div class="name" id="moh" onclick="sparkle('moh')"></div>
+  <div class="name" id="majd"></div>
+  <div class="name" id="moh"></div>
 
   <div class="message" id="message">أنتِ نعمة من الله 🌹</div>
 
@@ -127,22 +133,23 @@ button{
   <button onclick="evening()">أذكار المساء 🌙</button>
   <button onclick="duaa()">أدعية 🙏</button>
 
-  <!-- مكان خاص للزر السرّي -->
-  <div id="secretArea" class="secret-area hidden">
-    <div class="secret-title">✨ رسالة خاصة ✨</div>
+</div>
+
+<!-- نافذة الزر السرّي -->
+<div id="secretOverlay" class="secret-overlay hidden">
+  <div class="secret-box">
+    <h3>✨ رسالة خاصة ✨</h3>
     <button onclick="secret()">🔒 افتح الرسالة السرّية</button>
   </div>
-
 </div>
 
 <script>
-/* ===== بيانات ===== */
+/* ===== أسماء ===== */
 const NAME_MAJD="مجد";
 const NAME_MOH="محمد";
 const yourName="محمد";
 const msg=document.getElementById("message");
 
-/* ===== بناء الحروف (تبقى متصلة) ===== */
 function buildName(id,text){
   const el=document.getElementById(id);
   el.innerHTML="";
@@ -155,125 +162,54 @@ function buildName(id,text){
 buildName("majd",NAME_MAJD);
 buildName("moh",NAME_MOH);
 
-/* ===== ألوان ===== */
-const colors=["#ff4d6d","#ff7a00","#9b5cff","#00b4d8","#43e97b"];
-
-/* ===== تلألؤ الاسم ===== */
-function sparkle(id){
-  const el=document.getElementById(id);
-  el.classList.toggle("glow");
-  el.querySelectorAll("span").forEach(s=>{
-    s.style.color=colors[Math.floor(Math.random()*colors.length)];
-  });
-  burst(30,lastX,lastY);
-}
-
-/* ===== القلوب ===== */
-const shapes=["❤️","💖","💕","💘","✨","🌸","🌹","⭐"];
-function burst(n,x,y){
+/* ===== قلوب ===== */
+const shapes=["❤️","💖","💕","✨","🌸"];
+function burst(n){
   for(let i=0;i<n;i++){
     const p=document.createElement("div");
     p.className="particle";
     p.textContent=shapes[Math.floor(Math.random()*shapes.length)];
-    p.style.left=(x??Math.random()*innerWidth)+"px";
-    p.style.top =(y??Math.random()*innerHeight)+"px";
-    p.style.fontSize=(Math.random()*1.6+1)+"em";
+    p.style.left=Math.random()*innerWidth+"px";
+    p.style.top=Math.random()*innerHeight+"px";
+    p.style.fontSize=(Math.random()*1.5+1)+"em";
     document.body.appendChild(p);
-    setTimeout(()=>p.remove(),3500);
+    setTimeout(()=>p.remove(),3000);
   }
 }
-
-/* ===== تتبع الإصبع ===== */
-let lastX=0,lastY=0;
-function follow(x,y){ lastX=x; lastY=y; burst(2,x,y); }
-document.addEventListener("mousemove",e=>follow(e.clientX,e.clientY));
-document.addEventListener("touchmove",e=>{
-  const t=e.touches[0];
-  follow(t.clientX,t.clientY);
-},{passive:true});
 
 /* ===== العدّاد ===== */
 let touches=0;
 function love(){
   touches++;
   document.getElementById("count").textContent=`${touches} / 7`;
-  burst(40,lastX,lastY);
+  burst(30);
   if(touches===7){
-    document.getElementById("secretArea").classList.remove("hidden");
-    burst(120,lastX,lastY);
+    document.getElementById("secretOverlay").classList.remove("hidden");
+    burst(120);
   }
 }
 
-/* ===== أذكار الصباح (30) ===== */
-const morningAzkar=[
-"أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ","آية الكرسي",
-"قُلْ هُوَ اللَّهُ أَحَدٌ","قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ","قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
-"أصبحنا وأصبح الملك لله","اللهم بك أصبحنا وبك نحيا",
-"بسم الله الذي لا يضر مع اسمه شيء","رضيت بالله ربًا وبالإسلام دينًا",
-"اللهم ما أصبح بي من نعمة فمنك","اللهم عافني في بدني","اللهم عافني في سمعي",
-"اللهم عافني في بصري","اللهم إني أسألك العفو والعافية",
-"حسبي الله لا إله إلا هو","سبحان الله وبحمده",
-"لا إله إلا الله وحده لا شريك له","اللهم إني أسألك خير هذا اليوم",
-"اللهم اجعل هذا اليوم بركة","اللهم احفظني من كل سوء",
-"اللهم ارزقني طمأنينة","اللهم اشرح صدري","اللهم قوِّ إيماني",
-"اللهم اجعلني من الذاكرين","اللهم اجعلني من الشاكرين",
-"اللهم اغفر لي","اللهم ارحمني","اللهم اهدني",
-"اللهم ثبت قلبي","اللهم بارك لي في يومي"
-];
-
-/* ===== أذكار المساء (30) ===== */
-const eveningAzkar=[
-"أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ","آية الكرسي",
-"قُلْ هُوَ اللَّهُ أَحَدٌ","قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ","قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
-"أمسينا وأمسى الملك لله","اللهم بك أمسينا وبك نحيا",
-"بسم الله الذي لا يضر مع اسمه شيء","رضيت بالله ربًا وبالإسلام دينًا",
-"اللهم ما أمسى بي من نعمة فمنك","اللهم عافني في بدني","اللهم عافني في سمعي",
-"اللهم عافني في بصري","اللهم إني أسألك العفو والعافية",
-"حسبي الله لا إله إلا هو","سبحان الله وبحمده",
-"لا إله إلا الله وحده لا شريك له","اللهم اجعل ليلتي سكينة",
-"اللهم أنزل الطمأنينة في قلبي","اللهم احفظني من كل سوء",
-"اللهم اغفر لي","اللهم ارحمني","اللهم تقبل عملي",
-"اللهم اختم يومي بخير","اللهم ارزقني نومًا هادئًا",
-"اللهم طهر قلبي","اللهم اجبر خاطري","اللهم قربني إليك",
-"اللهم اجعلني مطمئنًا","اللهم اجعل عاقبتي خيرًا"
-];
-
-/* ===== الأدعية (30) ===== */
-const duaas=[
-"رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً","رَبِّ اشْرَحْ لِي صَدْرِي","رَبِّ زِدْنِي عِلْمًا",
-"رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ","اللهم اغفر لي","اللهم ارحمني",
-"اللهم اهدني","اللهم ثبت قلبي","اللهم ارزقني الإخلاص",
-"اللهم ارزقني الرضا","اللهم اجبر خاطري","اللهم اكفني بحلالك",
-"اللهم فرّج همي","اللهم اشفني","اللهم اشف مرضانا",
-"اللهم تقبل توبتي","اللهم حسن خلقي","اللهم طهر قلبي",
-"اللهم نور بصيرتي","اللهم يسّر أمري","اللهم اجعلني من الصالحين",
-"اللهم لا تكلني لنفسي","اللهم أحسن عاقبتي",
-"اللهم اجعل القرآن نور قلبي","اللهم ارزقني حسن الظن بك",
-"اللهم ثبتني عند السؤال","اللهم اختم لي بخير",
-"اللهم اجعلني من عبادك الصالحين","اللهم رضّني بما قضيت",
-"اللهم اجعلني قريبًا منك"
-];
+/* ===== الأذكار ===== */
+const morningAzkar=["أعوذ بالله من الشيطان الرجيم","آية الكرسي","سبحان الله وبحمده"];
+const eveningAzkar=["آية الكرسي","أمسينا وأمسى الملك لله","سبحان الله العظيم"];
+const duaas=["رب زدني علمًا","رب اشرح لي صدري","اللهم اجبر خاطري"];
 
 let mi=0,ei=0,di=0;
-function morning(){ msg.textContent=morningAzkar[mi]; mi=(mi+1)%30; burst(40,lastX,lastY); }
-function evening(){ msg.textContent=eveningAzkar[ei]; ei=(ei+1)%30; burst(40,lastX,lastY); }
-function duaa(){ msg.textContent=duaas[di]; di=(di+1)%30; burst(40,lastX,lastY); }
+function morning(){ msg.textContent=morningAzkar[mi++%morningAzkar.length]; burst(20); }
+function evening(){ msg.textContent=eveningAzkar[ei++%eveningAzkar.length]; burst(20); }
+function duaa(){ msg.textContent=duaas[di++%duaas.length]; burst(20); }
 
-/* ===== الرسائل السرّية ===== */
+/* ===== السرّي ===== */
 const secrets=[
 `أنا ${yourName}… قلبي ارتاح.`,
-`${yourName} وجد الطمأنينة.`,
-`القلب عرف قبل العقل.`,
-`فيك أمان.`,
+`فيك سكينة.`,
 `القرب نعمة.`,
-`السكينة هنا.`,
-`وهكذا يكفي.`
+`وهنا يهدأ العالم.`
 ];
 let si=0;
 function secret(){
-  msg.textContent=secrets[si];
-  si=(si+1)%secrets.length;
-  burst(150,lastX,lastY);
+  msg.textContent=secrets[si++%secrets.length];
+  burst(150);
 }
 </script>
 
