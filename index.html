@@ -29,16 +29,31 @@ body{
   text-align:center;
   padding:20px;
 }
-h1{
-  color:red;
+
+/* ======= NAMES ======= */
+.name{
   font-size:3em;
-  animation:pulse 1.5s infinite;
+  cursor:pointer;
+  margin:5px 0;
+  font-weight:bold;
+  background:linear-gradient(90deg,#ff4d6d,#ffb3c6,#ff4d6d);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shine 3s linear infinite;
+  transition:0.5s;
+  text-shadow:0 0 15px rgba(255,0,100,.5);
 }
-@keyframes pulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.15)}
-  100%{transform:scale(1)}
+@keyframes shine{
+  to{background-position:200% center;}
 }
+
+.subname{
+  font-size:2.2em;
+  margin-bottom:10px;
+}
+
+/* ======= MESSAGE ======= */
 .message{
   background:rgba(255,255,255,.95);
   padding:18px;
@@ -46,7 +61,6 @@ h1{
   min-height:90px;
   font-size:1.25em;
   margin:20px 0;
-  transition:.5s;
 }
 button{
   width:100%;
@@ -66,6 +80,8 @@ button:disabled{
   font-size:.9em;
   color:#333;
 }
+
+/* ======= HEART ======= */
 .heart{
   position:absolute;
   font-size:1.7em;
@@ -81,7 +97,9 @@ button:disabled{
 <body>
 
 <div class="container">
-  <h1>مجد</h1>
+
+  <div class="name" id="majdName" onclick="changeMajd()">مجد</div>
+  <div class="name subname" id="mohName" onclick="changeMoh()">محمد</div>
 
   <div class="message" id="message">
     أنتِ نعمة من الله 🌹
@@ -100,8 +118,8 @@ button:disabled{
 </div>
 
 <script>
-const yourName = "محمد وجيه محمود غنام";
-
+/* ===== BASIC ===== */
+const yourName = "محمد";
 const messageBox = document.getElementById("message");
 const loveCounter = document.getElementById("loveCount");
 const secretBtn = document.getElementById("secretBtn");
@@ -112,90 +130,78 @@ let eveningIndex = 0;
 let duaaIndex = 0;
 let secretIndex = 0;
 
-const morningAzkar = [
-"آية الكرسي",
-"سورة الإخلاص",
-"سورة الفلق",
-"سورة الناس",
-"أصبحنا وأصبح الملك لله",
-"اللهم بك أصبحنا وبك نحيا",
-"بسم الله الذي لا يضر",
-"رضيت بالله ربًا",
-"اللهم ما أصبح بي من نعمة",
-"سبحان الله وبحمده"
+/* ===== COLORS FOR NAMES ===== */
+const colorsMajd = [
+"linear-gradient(90deg,#ff4d6d,#ffd6e0)",
+"linear-gradient(90deg,#ff7a00,#ffe29f)",
+"linear-gradient(90deg,#9b5cff,#e0c3fc)",
+"linear-gradient(90deg,#00b4d8,#90e0ef)"
+];
+const colorsMoh = [
+"linear-gradient(90deg,#4facfe,#00f2fe)",
+"linear-gradient(90deg,#43e97b,#38f9d7)",
+"linear-gradient(90deg,#fa709a,#fee140)",
+"linear-gradient(90deg,#30cfd0,#330867)"
 ];
 
-const eveningAzkar = [
-"آية الكرسي",
-"سورة الإخلاص",
-"سورة الفلق",
-"سورة الناس",
-"أمسينا وأمسى الملك لله",
-"اللهم بك أمسينا",
-"بسم الله الذي لا يضر",
-"رضيت بالله ربًا",
-"اللهم ما أمسى بي من نعمة",
-"سبحان الله وبحمده"
-];
+let majdColor = 0;
+let mohColor = 0;
 
-const duaas = [
-"ربنا آتنا في الدنيا حسنة",
-"رب اغفر لي ولوالدي",
-"رب اشرح لي صدري",
-"رب زدني علمًا",
-"اللهم اجبر خاطري",
-"اللهم ارزقني الطمأنينة",
-"اللهم لا ترد دعائي",
-"اللهم اختم لي بخير"
-];
+/* ===== CHANGE NAME EFFECT ===== */
+function changeMajd(){
+  majdColor = (majdColor + 1) % colorsMajd.length;
+  document.getElementById("majdName").style.background = colorsMajd[majdColor];
+}
+function changeMoh(){
+  mohColor = (mohColor + 1) % colorsMoh.length;
+  document.getElementById("mohName").style.background = colorsMoh[mohColor];
+}
+
+/* ===== DATA ===== */
+const morningAzkar = ["آية الكرسي","سبحان الله وبحمده","رضيت بالله ربًا"];
+const eveningAzkar = ["آية الكرسي","أمسينا وأمسى الملك لله","سبحان الله العظيم"];
+const duaas = ["ربنا آتنا في الدنيا حسنة","اللهم اجبر خاطري","اللهم اشف قلبي"];
 
 const secretMessages = [
-`أنا ${yourName}… تعلقي فيك هادئ لكنه صادق.`,
-`${yourName} يطمئن لفكرتك بدون أسباب.`,
-`فيك راحة، وهذا نادر.`,
-`${yourName} اختارك بهدوء.`,
-`فيك أمان لا يُشرح.`,
+`أنا ${yourName}… ووجودك مريح.`,
 `${yourName} يحفظك في قلبه.`,
-`قربك جميل… حتى في الصمت.`
+`فيك طمأنينة نادرة.`,
+`اختيارك كان هادئًا.`,
+`قربك جميل.`,
+`القلب يعرف.`,
+`وبك يكتمل الشعور.`
 ];
 
+/* ===== FUNCTIONS ===== */
 function love(){
   touches++;
   loveCounter.textContent = `${touches} / 7`;
   createHeart();
-
-  if(touches >= 7){
-    secretBtn.disabled = false;
-  }
+  if(touches >= 7) secretBtn.disabled = false;
 }
-
 function morning(){
   messageBox.textContent = morningAzkar[morningIndex];
   morningIndex = (morningIndex + 1) % morningAzkar.length;
 }
-
 function evening(){
   messageBox.textContent = eveningAzkar[eveningIndex];
   eveningIndex = (eveningIndex + 1) % eveningAzkar.length;
 }
-
 function duaa(){
   messageBox.textContent = duaas[duaaIndex];
   duaaIndex = (duaaIndex + 1) % duaas.length;
 }
-
 function secret(){
   messageBox.textContent = secretMessages[secretIndex];
   secretIndex = (secretIndex + 1) % secretMessages.length;
 }
-
 function createHeart(){
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerText = "❤️";
-  heart.style.left = Math.random()*100 + "vw";
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),6000);
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerText = "❤️";
+  h.style.left = Math.random()*100 + "vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
 }
 </script>
 
