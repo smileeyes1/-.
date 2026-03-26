@@ -16,7 +16,6 @@ body{
   justify-content:center;
   align-items:center;
 }
-
 .container{
   width:100%;
   max-width:360px;
@@ -28,14 +27,10 @@ body{
 .name{
   font-size:2.6em;
   margin:6px 0;
-  direction:rtl;
 }
-.name span{
-  color:#ff4d6d;
-}
-.name.glow span{
-  animation:sparkle 1.4s infinite alternate;
-}
+.name span{color:#ff4d6d;}
+.name.glow span{animation:sparkle 1.4s infinite alternate;}
+
 @keyframes sparkle{
   from{ text-shadow:0 0 6px currentColor; }
   to{ text-shadow:0 0 22px currentColor; }
@@ -47,7 +42,7 @@ body{
   border-radius:16px;
   padding:16px;
   font-size:1.15em;
-  min-height:90px;
+  min-height:100px;
   margin:14px 0;
   line-height:1.8;
 }
@@ -63,11 +58,7 @@ button{
   color:#fff;
   font-size:1em;
 }
-
-.counter{
-  font-size:.85em;
-  margin:6px 0;
-}
+.counter{font-size:.85em;margin:6px 0;}
 
 /* ===== القلوب ===== */
 .particle{
@@ -79,7 +70,7 @@ button{
   to{opacity:0;transform:translateY(-140px) scale(1.6)}
 }
 
-/* ===== نافذة الزر السرّي ===== */
+/* ===== السر ===== */
 .secret-overlay{
   position:fixed;
   inset:0;
@@ -93,21 +84,15 @@ button{
   background:#fff0f5;
   padding:24px;
   border-radius:22px;
-  text-align:center;
   width:80%;
   max-width:300px;
-  animation:pop 0.6s ease;
+  animation:pop .6s ease;
 }
-.secret-box h3{
-  margin:0 0 12px;
-  color:#ff4d6d;
-}
+.secret-box h3{color:#ff4d6d;}
 .secret-box button{
   background:linear-gradient(135deg,#ff0844,#ffb199);
-  font-size:1.05em;
   animation:pulse 1.4s infinite;
 }
-
 .hidden{display:none;}
 
 @keyframes pop{
@@ -123,8 +108,7 @@ button{
 <body>
 
 <div class="container">
-
-  <div class="name" id="majd"></div>
+  <div class="name glow" id="majd"></div>
   <div class="name" id="moh"></div>
 
   <div class="message" id="message">أنتِ نعمة من الله 🌹</div>
@@ -135,10 +119,8 @@ button{
   <button onclick="morning()">أذكار الصباح 🌅</button>
   <button onclick="evening()">أذكار المساء 🌙</button>
   <button onclick="duaa()">أدعية 💫</button>
-
 </div>
 
-<!-- نافذة السرّي -->
 <div id="secretOverlay" class="secret-overlay hidden">
   <div class="secret-box">
     <h3>💖 من محمد</h3>
@@ -147,10 +129,7 @@ button{
 </div>
 
 <script>
-/* ===== أسماء ===== */
-const NAME_MAJD="مجد";
-const NAME_MOH="محمد";
-
+/* ===== الأسماء ===== */
 function buildName(id,text){
   const el=document.getElementById(id);
   el.innerHTML="";
@@ -160,10 +139,10 @@ function buildName(id,text){
     el.appendChild(s);
   });
 }
-buildName("majd",NAME_MAJD);
-buildName("moh",NAME_MOH);
+buildName("majd","مجد");
+buildName("moh","محمد");
 
-/* ===== قلوب ===== */
+/* ===== القلوب ===== */
 const shapes=["❤️","💖","💕","✨","🌸"];
 function burst(n){
   for(let i=0;i<n;i++){
@@ -178,39 +157,161 @@ function burst(n){
   }
 }
 
-/* ===== العدّاد والسرّي ===== */
+/* ===== العداد ===== */
 let touches=0;
 function love(){
   touches++;
-  document.getElementById("count").textContent=`${touches} / 7`;
+  count.textContent=`${touches} / 7`;
   burst(25);
   if(touches===7){
-    document.getElementById("secretOverlay").classList.remove("hidden");
-    burst(100);
+    secretOverlay.classList.remove("hidden");
+    burst(120);
   }
 }
 
-/* ===== القوائم (من نصك حرفيًا) ===== */
-const morningAzkar = [/* … الثلاثون التي أرسلتها … */];
-const eveningAzkar = [/* … الثلاثون التي أرسلتها … */];
-const duaas = [/* … الثلاثون التي أرسلتها … */];
-const secretWords = [
-"A",
-"A"
-  // ← هنا توضع **القائمة الرابعة (30 كلمة من محمد)** كاملة
+/* ===== 30 أذكار الصباح ===== */
+const morningAzkar=[
+"أصبحنا وأصبح الملك لله",
+"اللهم بك أصبحنا وبك أمسينا",
+"الحمد لله الذي أحيانا",
+"رضيت بالله ربًا",
+"اللهم ما أصبح بي من نعمة فمنك",
+"حسبي الله لا إله إلا هو",
+"سبحان الله وبحمده",
+"سبحان الله العظيم",
+"اللهم إني أسألك خير هذا اليوم",
+"يا حي يا قيوم برحمتك أستغيث",
+"اللهم عافني في بدني",
+"اللهم استرني",
+"اللهم احفظني من كل سوء",
+"اللهم طمئن قلبي",
+"اللهم نوّر يومي",
+"اللهم ارزقني رزقًا حلالًا",
+"اللهم اجعلني شاكرًا",
+"اللهم بارك لي في وقتي",
+"اللهم يسّر أمري",
+"اللهم وفقني",
+"اللهم اغفر لي",
+"اللهم اهدني",
+"اللهم قرّبني إليك",
+"اللهم اجعل هذا اليوم خيرًا",
+"اللهم ارزقني راحة",
+"اللهم احفظ من أحب",
+"اللهم اجعلني مطمئنًا",
+"اللهم اجعل عملي صالحًا",
+"اللهم لا تكلني لنفسي",
+"والحمد لله رب العالمين"
+];
+
+/* ===== 30 أذكار المساء ===== */
+const eveningAzkar=[
+"أمسينا وأمسى الملك لله",
+"اللهم بك أمسينا",
+"أعوذ بكلمات الله التامات",
+"حسبي الله ونعم الوكيل",
+"سبحان الله وبحمده",
+"سبحان الله العظيم",
+"اللهم اغفر لي",
+"اللهم ارح قلبي",
+"اللهم اجعل لي سكينة",
+"اللهم طمئن نفسي",
+"اللهم استرني",
+"اللهم اجبر خاطري",
+"اللهم احفظني",
+"اللهم احفظ أهلي",
+"اللهم أرحني",
+"اللهم نوّر قلبي",
+"اللهم ارزقني الرضا",
+"اللهم أعذني من الهم",
+"اللهم قربني إليك",
+"اللهم تقبل مني",
+"اللهم ارح ضعفي",
+"اللهم اجعل نومي راحة",
+"اللهم احفظ أحبتي",
+"اللهم لا تحرمني الأمل",
+"اللهم ارزقني سلامًا",
+"اللهم ثبتني",
+"اللهم أنس وحشتي",
+"اللهم اجعل غدي أجمل",
+"اللهم اختم يومي بخير",
+"والحمد لله"
+];
+
+/* ===== 30 دعاء ===== */
+const duaas=[
+"اللهم اجبر قلبي",
+"اللهم ارزقني طمأنينة",
+"اللهم اشفِ صدري",
+"اللهم اكفني ما أهمني",
+"اللهم لا تتركني لنفسي",
+"اللهم افتح لي أبواب الخير",
+"اللهم ارزقني سلامًا داخليًا",
+"اللهم ارح قلبي",
+"اللهم دلني على الصواب",
+"اللهم يسر أمري",
+"اللهم قرّب لي الخير",
+"اللهم أبعد عني الشر",
+"اللهم لا تخيب رجائي",
+"اللهم زدني قربًا منك",
+"اللهم ارزقني الرضا",
+"اللهم اجعلني من السعداء",
+"اللهم ثبت قلبي",
+"اللهم أعني على ذكرك",
+"اللهم احفظ قلبي",
+"اللهم بارك لي",
+"اللهم ارزقني صبرًا",
+"اللهم ارزقني فرحًا",
+"اللهم لا تكسر لي خاطرًا",
+"اللهم اجعلني مطمئنًا",
+"اللهم اكتب لي الخير",
+"اللهم طهّر قلبي",
+"اللهم تقبل دعائي",
+"اللهم اشرح صدري",
+"اللهم نوّر طريقي",
+"اللهم أحسن خاتمتي"
+];
+
+/* ===== 30 كلمة سرية ===== */
+const secretWords=[
+"مجد… وجودك نعمة 💖",
+"أحبك بهدوء",
+"قربك طمأنينة",
+"اسمك راحة",
+"أبتسم حين أفكر بك",
+"وجودك فرق",
+"قلبك جميل",
+"ضحكتك حياة",
+"حديثك راحة",
+"أختارك كل مرة",
+"أحبك بلا شروط",
+"أنتِ آمنة",
+"أدعُ لك دائمًا",
+"أحب حضورك",
+"قربك سلام",
+"أنتِ نور بسيط",
+"أحبك دون ضجيج",
+"مكانك في قلبي ثابت",
+"أنتِ معنى السعادة",
+"قربك يكفيني",
+"أحب اسمك",
+"أثق بك",
+"وجودك يطمئنني",
+"أحب تفاصيلك",
+"أفضّلك",
+"أنتِ مختلفة",
+"قلبك أبيض",
+"أحبك باحترام",
+"أنتِ اختياري",
+"محمد 💌"
 ];
 
 /* ===== التتابع ===== */
 const msg=document.getElementById("message");
 let mi=0,ei=0,di=0,si=0;
-
-function morning(){ msg.textContent=morningAzkar[mi++ % morningAzkar.length]; burst(20); }
-function evening(){ msg.textContent=eveningAzkar[ei++ % eveningAzkar.length]; burst(20); }
-function duaa(){ msg.textContent=duaas[di++ % duaas.length]; burst(20); }
-function secret(){
-  msg.textContent=secretWords[si++ % secretWords.length];
-  burst(120);
-}
+function morning(){msg.textContent=morningAzkar[mi++%30];burst(20);}
+function evening(){msg.textContent=eveningAzkar[ei++%30];burst(20);}
+function duaa(){msg.textContent=duaas[di++%30];burst(20);}
+function secret(){msg.textContent=secretWords[si++%30];burst(120);}
 </script>
 
 </body>
