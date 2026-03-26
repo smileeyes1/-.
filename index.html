@@ -6,18 +6,16 @@
 <title>مجد ❤️</title>
 
 <style>
-* { box-sizing: border-box; }
-
 body {
   margin: 0;
   height: 100vh;
-  background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fad0c4);
+  background: linear-gradient(135deg,#ffd1dc,#ffe6eb,#fff0f5);
   background-size: 400% 400%;
   animation: bg 10s ease infinite;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Tahoma", sans-serif;
+  font-family: Tahoma, sans-serif;
   overflow: hidden;
 }
 
@@ -29,15 +27,15 @@ body {
 
 .container {
   width: 100%;
-  max-width: 420px;
+  max-width: 380px;
   text-align: center;
   padding: 20px;
 }
 
 h1 {
-  font-size: 3.2em;
-  color: #fff;
-  text-shadow: 0 0 20px #ff3366;
+  color: red;
+  font-size: 3em;
+  text-shadow: 0 0 15px #ff4d6d;
   animation: pulse 1.5s infinite;
 }
 
@@ -48,63 +46,41 @@ h1 {
 }
 
 .message {
-  margin: 25px auto;
-  font-size: 1.4em;
-  color: #4a0033;
+  margin: 20px auto;
   background: rgba(255,255,255,0.9);
+  padding: 18px;
   border-radius: 15px;
-  padding: 20px;
+  font-size: 1.3em;
+  color: #5a0033;
   min-height: 90px;
-  transition: 0.5s;
 }
 
-.buttons button {
+button {
   width: 100%;
+  margin-top: 10px;
   padding: 15px;
-  margin-top: 12px;
-  font-size: 1.2em;
-  border-radius: 15px;
   border: none;
-  cursor: pointer;
-  background: #ff3366;
+  border-radius: 14px;
+  background: #ff4d6d;
   color: white;
-  box-shadow: 0 0 15px #ff99cc;
+  font-size: 1.2em;
+  cursor: pointer;
 }
 
-.buttons button:hover {
-  background: #cc0052;
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
 .heart {
   position: absolute;
   font-size: 1.8em;
-  color: red;
-  animation: fall 6s linear infinite;
+  animation: fall 6s linear forwards;
 }
 
 @keyframes fall {
-  0% {transform: translateY(-10vh); opacity:1;}
-  100% {transform: translateY(110vh); opacity:0;}
-}
-
-.sparkle {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background: pink;
-  border-radius: 50%;
-  animation: spark 1s ease-out forwards;
-}
-
-@keyframes spark {
-  from {transform: scale(1); opacity:1;}
-  to {transform: scale(3); opacity:0;}
-}
-
-.music {
-  margin-top: 15px;
-  color: #fff;
-  font-size: 0.9em;
+  from {top:-10vh; opacity:1;}
+  to {top:110vh; opacity:0;}
 }
 </style>
 </head>
@@ -115,48 +91,47 @@ h1 {
   <h1>مجد</h1>
 
   <div class="message" id="message">
-    وجودك يطمئن القلب 💗
+    أنتِ نعمة من الله 🌹
   </div>
 
-  <div class="buttons">
-    <button onclick="loveTouch()">لمسة حب 💕</button>
-    <button onclick="duaa()">دعاء لك 🌸</button>
-    <button onclick="azkar()">ذكر 🤍</button>
-  </div>
-
-  <div class="music">
-    <audio controls>
-      https://cdn.pixabay.com/download/audio/2022/03/15/audio_8c1d2c4d44.mp3
-    </audio>
-    <div>🎵 موسيقى هادئة</div>
-  </div>
+  <button onclick="loveTouch()">لمسة حب ❤️</button>
+  <button onclick="duaa()">دعاء لك 🌸</button>
+  <button onclick="azkar()">ذكر 🤍</button>
+  <button id="secretBtn" onclick="secretMessage()" disabled>
+    🔒 رسالة سرية
+  </button>
 </div>
 
 <script>
+let loveCount = 0;
+
 const loveMessages = [
-  "الله يحفظك لي 🤍",
-  "وجودك يخلّي الدنيا أهدى",
-  "أحب طمأنينتك",
-  "قلبك جميل مثل اسمك",
-  "أدعُو الله أن يسعدك دائمًا",
-  "أحبك بطريقة هادئة وآمنة",
-  "ما في شي يجي زي وجودك"
+  "وجودك يطمني 🤍",
+  "الله يحفظك لي",
+  "قلبك أمان",
+  "أحب طريقتك",
+  "دعائي دايمًا لك",
+  "أنتِ شيء جميل في حياتي"
+];
+
+const secretMessages = [
+  "الرسالة السرية: أحبك بهدوء وصدق ❤️",
+  "الرسالة السرية: أنتِ الأمان",
+  "الرسالة السرية: وجودك فرق"
 ];
 
 const duaas = [
-  "اللهم اجعل قلبها مطمئنًا",
-  "اللهم أسعدها سعادة لا تزول",
-  "اللهم احفظها بعينك التي لا تنام",
-  "اللهم ارزقها راحة البال",
-  "اللهم اجعل أيامها نورًا"
+  "اللهم أسعد قلبها",
+  "اللهم احفظها",
+  "اللهم اجعل أيامها راحة",
+  "اللهم اكتب لها الخير"
 ];
 
-const azkar = [
+const azkarList = [
   "سبحان الله",
   "الحمد لله",
   "لا إله إلا الله",
-  "الله أكبر",
-  "لا حول ولا قوة إلا بالله"
+  "الله أكبر"
 ];
 
 function random(arr){
@@ -165,38 +140,37 @@ function random(arr){
 
 function loveTouch(){
   document.getElementById("message").innerText = random(loveMessages);
-  sparkle();
-  heart();
+  loveCount++;
+  heartEffect();
   if(navigator.vibrate) navigator.vibrate(80);
+
+  if(loveCount >= 5){
+    document.getElementById("secretBtn").disabled = false;
+    document.getElementById("secretBtn").innerText = "💌 افتح الرسالة السرية";
+  }
+}
+
+function secretMessage(){
+  document.getElementById("message").innerText = random(secretMessages);
+  heartEffect();
 }
 
 function duaa(){
   document.getElementById("message").innerText = random(duaas);
-  heart();
+  heartEffect();
 }
 
 function azkar(){
-  document.getElementById("message").innerText = random(azkar);
+  document.getElementById("message").innerText = random(azkarList);
 }
 
-function heart(){
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerHTML="❤️";
-  h.style.left=Math.random()*100+"vw";
+function heartEffect(){
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerText = "❤️";
+  h.style.left = Math.random()*100 + "vw";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
-}
-
-function sparkle(){
-  for(let i=0;i<8;i++){
-    const s=document.createElement("div");
-    s.className="sparkle";
-    s.style.left=Math.random()*100+"vw";
-    s.style.top=Math.random()*100+"vh";
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),1000);
-  }
 }
 </script>
 
