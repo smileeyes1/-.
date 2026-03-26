@@ -23,7 +23,7 @@ body{
   text-align:center;
 }
 
-/* ===== الهالة المضيئة الهادئة ===== */
+/* ===== الهالة ===== */
 .aura{
   width:220px;
   height:160px;
@@ -41,29 +41,45 @@ body{
 }
 
 @keyframes auraBreath{
-  0%{box-shadow:0 0 18px rgba(255,180,195,.45);}
-  50%{box-shadow:0 0 42px rgba(255,150,175,.85);}
-  100%{box-shadow:0 0 18px rgba(255,180,195,.45);}
+  0%{box-shadow:0 0 18px rgba(255,150,170,.5);}
+  50%{box-shadow:0 0 44px rgba(255,120,150,.9);}
+  100%{box-shadow:0 0 18px rgba(255,150,170,.5);}
 }
 
-/* ===== الأسماء العربية (واضحة بدون تقطيع) ===== */
+/* ===== الأسماء الواضحة ===== */
 .name{
-  font-size:2em;
+  font-size:2.2em;
   margin:4px 0;
-  color:#ffffff;
-  animation:nameGlow 4s ease-in-out infinite;
+  font-weight:600;
 }
 
-@keyframes nameGlow{
-  0%{color:#ffffff;text-shadow:0 0 8px rgba(255,255,255,.6);}
-  40%{color:#ffe066;text-shadow:0 0 16px rgba(255,224,102,.9);}
-  70%{color:#ffccd5;text-shadow:0 0 20px rgba(255,204,213,1);}
-  100%{color:#ffffff;text-shadow:0 0 8px rgba(255,255,255,.6);}
+/* مجد */
+.name.majd{
+  color:#c2255c;
+  animation:majdGlow 4s ease-in-out infinite;
 }
 
-/* ===== مربع الرسالة ===== */
+/* محمد */
+.name.moh{
+  color:#b08900;
+  animation:mohGlow 4s ease-in-out infinite;
+}
+
+@keyframes majdGlow{
+  0%{text-shadow:0 0 4px rgba(194,37,92,.6);}
+  50%{text-shadow:0 0 16px rgba(194,37,92,1);}
+  100%{text-shadow:0 0 4px rgba(194,37,92,.6);}
+}
+
+@keyframes mohGlow{
+  0%{text-shadow:0 0 4px rgba(176,137,0,.6);}
+  50%{text-shadow:0 0 16px rgba(176,137,0,1);}
+  100%{text-shadow:0 0 4px rgba(176,137,0,.6);}
+}
+
+/* ===== الرسالة ===== */
 .message{
-  background:#ffffff;
+  background:white;
   border-radius:16px;
   padding:16px;
   font-size:1.1em;
@@ -99,14 +115,12 @@ button{
   align-items:center;
   z-index:999;
 }
-
 .secret-box{
   background:#fff0f5;
   padding:24px;
   border-radius:22px;
   text-align:center;
 }
-
 .hidden{display:none;}
 </style>
 </head>
@@ -117,8 +131,8 @@ button{
 
   <div class="aura">
     <div>
-      <div class="name">مجد</div>
-      <div class="name">محمد</div>
+      <div class="name majd">مجد</div>
+      <div class="name moh">محمد</div>
     </div>
   </div>
 
@@ -268,7 +282,7 @@ const duaas=[
 "اللهم أحسن خاتمتي"
 ];
 
-/* ===== 30 كلمة سرية ===== */
+/* ===== 30 كلمة سرّية ===== */
 const secretWords=[
 "مجد… وجودك في حياتي نعمة من الله",
 "أحبك بهدوء يشبه الطمأنينة",
