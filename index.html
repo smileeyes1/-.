@@ -6,81 +6,77 @@
 <title>مجد ❤️</title>
 
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  background: linear-gradient(135deg,#ffd1dc,#ffe6eb,#fff0f5);
-  background-size: 400% 400%;
-  animation: bg 10s ease infinite;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Tahoma, sans-serif;
-  overflow: hidden;
+body{
+  margin:0;
+  height:100vh;
+  background:linear-gradient(135deg,#ffd1dc,#ffe6eb,#fff0f5);
+  background-size:400% 400%;
+  animation:bg 10s ease infinite;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Tahoma,sans-serif;
+  overflow:hidden;
+  transition:1s;
 }
-
-@keyframes bg {
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
+body.secret{
+  background:linear-gradient(135deg,#4a001f,#7a0033,#a30044);
 }
-
-.container {
-  width: 100%;
-  max-width: 380px;
-  text-align: center;
-  padding: 20px;
+@keyframes bg{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
-
-h1 {
-  color: red;
-  font-size: 3em;
-  text-shadow: 0 0 15px #ff4d6d;
-  animation: pulse 1.5s infinite;
+.container{
+  width:100%;
+  max-width:390px;
+  text-align:center;
+  padding:20px;
 }
-
-@keyframes pulse {
-  0%{transform:scale(1);}
-  50%{transform:scale(1.2);}
-  100%{transform:scale(1);}
+h1{
+  color:red;
+  font-size:3em;
+  animation:pulse 1.5s infinite;
 }
-
-.message {
-  margin: 20px auto;
-  background: rgba(255,255,255,0.9);
-  padding: 18px;
-  border-radius: 15px;
-  font-size: 1.3em;
-  color: #5a0033;
-  min-height: 90px;
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.2)}
+  100%{transform:scale(1)}
 }
-
-button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 15px;
-  border: none;
-  border-radius: 14px;
-  background: #ff4d6d;
-  color: white;
-  font-size: 1.2em;
-  cursor: pointer;
+.message{
+  background:rgba(255,255,255,.95);
+  padding:18px;
+  border-radius:16px;
+  min-height:90px;
+  font-size:1.25em;
+  margin:20px 0;
+  transition:.7s;
 }
-
-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+button{
+  width:100%;
+  margin-top:8px;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#ff4d6d;
+  color:#fff;
+  font-size:1.1em;
 }
-
-.heart {
-  position: absolute;
-  font-size: 1.8em;
-  animation: fall 6s linear forwards;
+button:disabled{
+  background:#bbb;
 }
-
-@keyframes fall {
-  from {top:-10vh; opacity:1;}
-  to {top:110vh; opacity:0;}
+.counter{
+  font-size:.9em;
+  color:#333;
+}
+.heart{
+  position:absolute;
+  font-size:1.7em;
+  animation:fall 6s linear forwards;
+}
+@keyframes fall{
+  from{top:-10vh;opacity:1}
+  to{top:110vh;opacity:0}
 }
 </style>
 </head>
@@ -94,85 +90,111 @@ button:disabled {
     أنتِ نعمة من الله 🌹
   </div>
 
-  <button onclick="loveTouch()">لمسة حب ❤️</button>
-  <button onclick="duaa()">دعاء لك 🌸</button>
-  <button onclick="azkar()">ذكر 🤍</button>
-  <button id="secretBtn" onclick="secretMessage()" disabled>
-    🔒 رسالة سرية
+  <button onclick="love()">لمسة حب ❤️</button>
+  <div class="counter" id="loveCount">0 / 7</div>
+
+  <button onclick="morning()">أذكار الصباح 🌅</button>
+  <button onclick="evening()">أذكار المساء 🌙</button>
+  <button onclick="duaa()">أدعية 🙏</button>
+
+  <button id="secretBtn" onclick="secret()" disabled>
+    🔒 رسالة سرّية
   </button>
 </div>
 
 <script>
-let loveCount = 0;
+const yourName = "محمد وجيه محمود غنام";
+let touches = 0;
 
-const loveMessages = [
-  "وجودك يطمني 🤍",
-  "الله يحفظك لي",
-  "قلبك أمان",
-  "أحب طريقتك",
-  "دعائي دايمًا لك",
-  "أنتِ شيء جميل في حياتي"
+const morningAzkar = [
+"آية الكرسي","سورة الإخلاص","سورة الفلق","سورة الناس",
+"أصبحنا وأصبح الملك لله","اللهم بك أصبحنا وبك نحيا",
+"بسم الله الذي لا يضر","رضيت بالله ربًا",
+"اللهم ما أصبح بي من نعمة","اللهم عافني في بدني",
+"اللهم إني أسألك العفو","اللهم ارزقني الراحة",
+"سبحان الله وبحمده","لا إله إلا الله",
+"اللهم اجعل يومي خيرًا","اللهم بارك في وقتي",
+"اللهم احفظ من أحب","اللهم اكتب لي الرضا",
+"اللهم اهد قلبي","اللهم اشكر نعمتك",
+"اللهم ارزقني الطمأنينة","اللهم ثبتني",
+"اللهم اجعلني من الذاكرين",
+"اللهم اجعلني من الشاكرين",
+"اللهم افتح لي أبواب الخير",
+"اللهم اجعلني سبب فرح",
+"اللهم قرب لي الخير",
+"اللهم اصرف عني السوء",
+"اللهم اجعل صباحي جميل",
+"اللهم اجعلني مباركًا"
 ];
 
-const secretMessages = [
-  "الرسالة السرية: أحبك بهدوء وصدق ❤️",
-  "الرسالة السرية: أنتِ الأمان",
-  "الرسالة السرية: وجودك فرق"
+const eveningAzkar = [
+"آية الكرسي","سورة الإخلاص","سورة الفلق","سورة الناس",
+"أمسينا وأمسى الملك لله","اللهم بك أمسينا",
+"بسم الله الذي لا يضر",
+"رضيت بالله ربًا",
+"اللهم ما أمسى بي من نعمة",
+"اللهم عافني في بدني",
+"اللهم إني أسألك العفو",
+"اللهم اغفر لي","اللهم ارحمني",
+"سبحان الله وبحمده",
+"لا إله إلا الله",
+"اللهم اجعل ليلتي راحة",
+"اللهم اجعل نومي طمأنينة",
+"اللهم احفظ من أحب",
+"اللهم اشرح صدري",
+"اللهم اجبر خاطري",
+"اللهم زدني يقينًا",
+"اللهم هون عليّ",
+"اللهم اجعل قلبي مطمئنًا",
+"اللهم أنزل السكينة",
+"اللهم لا تكلني لنفسي",
+"اللهم قربني إليك",
+"اللهم طهر قلبي",
+"اللهم اختم يومي خيرًا",
+"اللهم اجعلني شاكرًا",
+"اللهم اجعلني راضيًا"
 ];
 
 const duaas = [
-  "اللهم أسعد قلبها",
-  "اللهم احفظها",
-  "اللهم اجعل أيامها راحة",
-  "اللهم اكتب لها الخير"
+"ربنا آتنا في الدنيا حسنة",
+"رب اغفر لي ولوالدي",
+"رب اشرح لي صدري",
+"رب زدني علما",
+"اللهم اغفر لي",
+"اللهم اهد قلبي",
+"اللهم ارزقني الصبر",
+"اللهم اجعلني مطمئنًا",
+"اللهم ارزقني الرضا",
+"اللهم اجبر خاطري",
+"اللهم قربني للخير",
+"اللهم احفظني",
+"اللهم ارزقني الحلال",
+"اللهم نجني من الهم",
+"اللهم اشف malade",
+"اللهم ارزقني السكينة",
+"اللهم لا تحرمني فضلك",
+"اللهم قوّ إيماني",
+"اللهم ثبت قلبي",
+"اللهم لا ترد دعائي",
+"اللهم تقبل عملي",
+"اللهم أنر طريقي",
+"اللهم اجعلني شاكرًا",
+"اللهم ارض عني",
+"اللهم اسعدني",
+"اللهم فرّج همي",
+"اللهم اكتب لي الخير",
+"اللهم بارك لي",
+"اللهم اجعلني من الصالحين",
+"اللهم اختم لي بخير"
 ];
 
-const azkarList = [
-  "سبحان الله",
-  "الحمد لله",
-  "لا إله إلا الله",
-  "الله أكبر"
+const secretMessages = [
+`أنا ${yourName}… ويمكن ما أظهره، بس تعلقي فيك واضح لي جدًا.`,
+`تفكيري فيك صار ثابت… وأنا ${yourName} مرتاح لهالشعور.`,
+`وجودك صنع مساحة أمان عند ${yourName} ما كانت موجودة.`,
+`${yourName} ما تعلّق فجأة… هو اختارك بهدوء.`,
+`صار بينك وبين قلبي اتفاق بدون كلام… وأنا ${yourName} ملتزم فيه.`,
+`${yourName} يحبك بصمت، بس إحساسه عالي.`,
+`فيك شيء يربكني ويطمني بنفس الوقت… وأنا ${yourName} ما أبغى يختفي.`
 ];
 
-function random(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
-}
-
-function loveTouch(){
-  document.getElementById("message").innerText = random(loveMessages);
-  loveCount++;
-  heartEffect();
-  if(navigator.vibrate) navigator.vibrate(80);
-
-  if(loveCount >= 5){
-    document.getElementById("secretBtn").disabled = false;
-    document.getElementById("secretBtn").innerText = "💌 افتح الرسالة السرية";
-  }
-}
-
-function secretMessage(){
-  document.getElementById("message").innerText = random(secretMessages);
-  heartEffect();
-}
-
-function duaa(){
-  document.getElementById("message").innerText = random(duaas);
-  heartEffect();
-}
-
-function azkar(){
-  document.getElementById("message").innerText = random(azkarList);
-}
-
-function heartEffect(){
-  const h = document.createElement("div");
-  h.className = "heart";
-  h.innerText = "❤️";
-  h.style.left = Math.random()*100 + "vw";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-}
-</script>
-
-</body>
-</html>
