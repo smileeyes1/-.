@@ -17,10 +17,6 @@ body{
   align-items:center;
   font-family:Tahoma,sans-serif;
   overflow:hidden;
-  transition:1s;
-}
-body.secret{
-  background:linear-gradient(135deg,#4a001f,#7a0033,#a30044);
 }
 @keyframes bg{
   0%{background-position:0% 50%}
@@ -40,7 +36,7 @@ h1{
 }
 @keyframes pulse{
   0%{transform:scale(1)}
-  50%{transform:scale(1.2)}
+  50%{transform:scale(1.15)}
   100%{transform:scale(1)}
 }
 .message{
@@ -50,7 +46,7 @@ h1{
   min-height:90px;
   font-size:1.25em;
   margin:20px 0;
-  transition:.7s;
+  transition:.5s;
 }
 button{
   width:100%;
@@ -61,6 +57,7 @@ button{
   background:#ff4d6d;
   color:#fff;
   font-size:1.1em;
+  cursor:pointer;
 }
 button:disabled{
   background:#bbb;
@@ -104,97 +101,103 @@ button:disabled{
 
 <script>
 const yourName = "محمد وجيه محمود غنام";
+
+const messageBox = document.getElementById("message");
+const loveCounter = document.getElementById("loveCount");
+const secretBtn = document.getElementById("secretBtn");
+
 let touches = 0;
+let morningIndex = 0;
+let eveningIndex = 0;
+let duaaIndex = 0;
+let secretIndex = 0;
 
 const morningAzkar = [
-"آية الكرسي","سورة الإخلاص","سورة الفلق","سورة الناس",
-"أصبحنا وأصبح الملك لله","اللهم بك أصبحنا وبك نحيا",
-"بسم الله الذي لا يضر","رضيت بالله ربًا",
-"اللهم ما أصبح بي من نعمة","اللهم عافني في بدني",
-"اللهم إني أسألك العفو","اللهم ارزقني الراحة",
-"سبحان الله وبحمده","لا إله إلا الله",
-"اللهم اجعل يومي خيرًا","اللهم بارك في وقتي",
-"اللهم احفظ من أحب","اللهم اكتب لي الرضا",
-"اللهم اهد قلبي","اللهم اشكر نعمتك",
-"اللهم ارزقني الطمأنينة","اللهم ثبتني",
-"اللهم اجعلني من الذاكرين",
-"اللهم اجعلني من الشاكرين",
-"اللهم افتح لي أبواب الخير",
-"اللهم اجعلني سبب فرح",
-"اللهم قرب لي الخير",
-"اللهم اصرف عني السوء",
-"اللهم اجعل صباحي جميل",
-"اللهم اجعلني مباركًا"
+"آية الكرسي",
+"سورة الإخلاص",
+"سورة الفلق",
+"سورة الناس",
+"أصبحنا وأصبح الملك لله",
+"اللهم بك أصبحنا وبك نحيا",
+"بسم الله الذي لا يضر",
+"رضيت بالله ربًا",
+"اللهم ما أصبح بي من نعمة",
+"سبحان الله وبحمده"
 ];
 
 const eveningAzkar = [
-"آية الكرسي","سورة الإخلاص","سورة الفلق","سورة الناس",
-"أمسينا وأمسى الملك لله","اللهم بك أمسينا",
+"آية الكرسي",
+"سورة الإخلاص",
+"سورة الفلق",
+"سورة الناس",
+"أمسينا وأمسى الملك لله",
+"اللهم بك أمسينا",
 "بسم الله الذي لا يضر",
 "رضيت بالله ربًا",
 "اللهم ما أمسى بي من نعمة",
-"اللهم عافني في بدني",
-"اللهم إني أسألك العفو",
-"اللهم اغفر لي","اللهم ارحمني",
-"سبحان الله وبحمده",
-"لا إله إلا الله",
-"اللهم اجعل ليلتي راحة",
-"اللهم اجعل نومي طمأنينة",
-"اللهم احفظ من أحب",
-"اللهم اشرح صدري",
-"اللهم اجبر خاطري",
-"اللهم زدني يقينًا",
-"اللهم هون عليّ",
-"اللهم اجعل قلبي مطمئنًا",
-"اللهم أنزل السكينة",
-"اللهم لا تكلني لنفسي",
-"اللهم قربني إليك",
-"اللهم طهر قلبي",
-"اللهم اختم يومي خيرًا",
-"اللهم اجعلني شاكرًا",
-"اللهم اجعلني راضيًا"
+"سبحان الله وبحمده"
 ];
 
 const duaas = [
 "ربنا آتنا في الدنيا حسنة",
 "رب اغفر لي ولوالدي",
 "رب اشرح لي صدري",
-"رب زدني علما",
-"اللهم اغفر لي",
-"اللهم اهد قلبي",
-"اللهم ارزقني الصبر",
-"اللهم اجعلني مطمئنًا",
-"اللهم ارزقني الرضا",
+"رب زدني علمًا",
 "اللهم اجبر خاطري",
-"اللهم قربني للخير",
-"اللهم احفظني",
-"اللهم ارزقني الحلال",
-"اللهم نجني من الهم",
-"اللهم اشف malade",
-"اللهم ارزقني السكينة",
-"اللهم لا تحرمني فضلك",
-"اللهم قوّ إيماني",
-"اللهم ثبت قلبي",
+"اللهم ارزقني الطمأنينة",
 "اللهم لا ترد دعائي",
-"اللهم تقبل عملي",
-"اللهم أنر طريقي",
-"اللهم اجعلني شاكرًا",
-"اللهم ارض عني",
-"اللهم اسعدني",
-"اللهم فرّج همي",
-"اللهم اكتب لي الخير",
-"اللهم بارك لي",
-"اللهم اجعلني من الصالحين",
 "اللهم اختم لي بخير"
 ];
 
 const secretMessages = [
-`أنا ${yourName}… ويمكن ما أظهره، بس تعلقي فيك واضح لي جدًا.`,
-`تفكيري فيك صار ثابت… وأنا ${yourName} مرتاح لهالشعور.`,
-`وجودك صنع مساحة أمان عند ${yourName} ما كانت موجودة.`,
-`${yourName} ما تعلّق فجأة… هو اختارك بهدوء.`,
-`صار بينك وبين قلبي اتفاق بدون كلام… وأنا ${yourName} ملتزم فيه.`,
-`${yourName} يحبك بصمت، بس إحساسه عالي.`,
-`فيك شيء يربكني ويطمني بنفس الوقت… وأنا ${yourName} ما أبغى يختفي.`
+`أنا ${yourName}… تعلقي فيك هادئ لكنه صادق.`,
+`${yourName} يطمئن لفكرتك بدون أسباب.`,
+`فيك راحة، وهذا نادر.`,
+`${yourName} اختارك بهدوء.`,
+`فيك أمان لا يُشرح.`,
+`${yourName} يحفظك في قلبه.`,
+`قربك جميل… حتى في الصمت.`
 ];
 
+function love(){
+  touches++;
+  loveCounter.textContent = `${touches} / 7`;
+  createHeart();
+
+  if(touches >= 7){
+    secretBtn.disabled = false;
+  }
+}
+
+function morning(){
+  messageBox.textContent = morningAzkar[morningIndex];
+  morningIndex = (morningIndex + 1) % morningAzkar.length;
+}
+
+function evening(){
+  messageBox.textContent = eveningAzkar[eveningIndex];
+  eveningIndex = (eveningIndex + 1) % eveningAzkar.length;
+}
+
+function duaa(){
+  messageBox.textContent = duaas[duaaIndex];
+  duaaIndex = (duaaIndex + 1) % duaas.length;
+}
+
+function secret(){
+  messageBox.textContent = secretMessages[secretIndex];
+  secretIndex = (secretIndex + 1) % secretMessages.length;
+}
+
+function createHeart(){
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerText = "❤️";
+  heart.style.left = Math.random()*100 + "vw";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),6000);
+}
+</script>
+
+</body>
+</html>
