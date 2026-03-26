@@ -23,49 +23,47 @@ body{
   text-align:center;
 }
 
-/* ===== الهالة المضيئة ===== */
+/* ===== الهالة المضيئة الهادئة ===== */
 .aura{
-  width:210px;
+  width:220px;
   height:160px;
-  margin:0 auto 14px;
+  margin:0 auto 16px;
   border-radius:50%;
   background:radial-gradient(circle,
-    rgba(255,200,210,.55),
-    rgba(255,200,210,.25),
+    rgba(255,200,210,0.55),
+    rgba(255,200,210,0.25),
     rgba(255,200,210,0)
   );
-  animation:auraBreath 4s ease-in-out infinite;
+  animation:auraBreath 5s ease-in-out infinite;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
 }
 
 @keyframes auraBreath{
-  0%{box-shadow:0 0 16px rgba(255,180,195,.5);}
-  50%{box-shadow:0 0 38px rgba(255,140,170,.85);}
-  100%{box-shadow:0 0 16px rgba(255,180,195,.5);}
+  0%{box-shadow:0 0 18px rgba(255,180,195,.45);}
+  50%{box-shadow:0 0 42px rgba(255,150,175,.85);}
+  100%{box-shadow:0 0 18px rgba(255,180,195,.45);}
 }
 
-/* ===== الأسماء ===== */
+/* ===== الأسماء العربية (واضحة بدون تقطيع) ===== */
 .name{
   font-size:2em;
   margin:4px 0;
-}
-.name span{
-  display:inline-block;
-  animation:letterGlow 3s infinite;
+  color:#ffffff;
+  animation:nameGlow 4s ease-in-out infinite;
 }
 
-@keyframes letterGlow{
-  0%{color:#ffffff;text-shadow:0 0 6px #ffffff;}
-  40%{color:#ffe066;text-shadow:0 0 14px #ffe066;}
-  70%{color:#ffccd5;text-shadow:0 0 18px #ffccd5;}
-  100%{color:#ffffff;text-shadow:0 0 6px #ffffff;}
+@keyframes nameGlow{
+  0%{color:#ffffff;text-shadow:0 0 8px rgba(255,255,255,.6);}
+  40%{color:#ffe066;text-shadow:0 0 16px rgba(255,224,102,.9);}
+  70%{color:#ffccd5;text-shadow:0 0 20px rgba(255,204,213,1);}
+  100%{color:#ffffff;text-shadow:0 0 8px rgba(255,255,255,.6);}
 }
 
-/* ===== الرسالة ===== */
+/* ===== مربع الرسالة ===== */
 .message{
-  background:#fff;
+  background:#ffffff;
   border-radius:16px;
   padding:16px;
   font-size:1.1em;
@@ -101,12 +99,14 @@ button{
   align-items:center;
   z-index:999;
 }
+
 .secret-box{
   background:#fff0f5;
   padding:24px;
   border-radius:22px;
   text-align:center;
 }
+
 .hidden{display:none;}
 </style>
 </head>
@@ -117,8 +117,8 @@ button{
 
   <div class="aura">
     <div>
-      <div class="name" id="majd"></div>
-      <div class="name" id="moh"></div>
+      <div class="name">مجد</div>
+      <div class="name">محمد</div>
     </div>
   </div>
 
@@ -130,6 +130,7 @@ button{
   <button onclick="morning()">أذكار الصباح 🌅</button>
   <button onclick="evening()">أذكار المساء 🌙</button>
   <button onclick="duaa()">أدعية 💫</button>
+
 </div>
 
 <div id="secretOverlay" class="secret-overlay hidden">
@@ -140,19 +141,6 @@ button{
 </div>
 
 <script>
-function buildText(id,text){
-  const el=document.getElementById(id);
-  el.innerHTML="";
-  [...text].forEach((l,i)=>{
-    const s=document.createElement("span");
-    s.textContent=l;
-    s.style.animationDelay=(i*0.3)+"s";
-    el.appendChild(s);
-  });
-}
-buildText("majd","مجد");
-buildText("moh","محمد");
-
 const message=document.getElementById("message");
 const overlay=document.getElementById("secretOverlay");
 
@@ -160,6 +148,7 @@ function afterMaghrib(){
   const h=new Date().getHours();
   return (h>=18 || h<5);
 }
+
 if(new Date().getHours()>=5){
   localStorage.removeItem("secretCount");
 }
@@ -178,7 +167,7 @@ function love(){
 }
 
 /* ===== 30 أذكار الصباح ===== */
-const morningAzkar=[ /* 30 عبارة كاملة */
+const morningAzkar=[
 "أصبحنا وأصبح الملك لله",
 "اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت",
 "الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور",
